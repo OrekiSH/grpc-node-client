@@ -69,14 +69,15 @@ export interface Greeter {
 }
 ```
 
-``` js
-// client.js
+``` ts
+// client.ts
 import { Greeter } from './hello';
 import GrpcNodeClient from 'grpc-node-client';
+import path from 'path';
 
 const client = new GrpcNodeClient<Greeter>({
   url: '0.0.0.0:50051',
-  protoPath: './hello.proto',
+  protoPath: path.resolve(__dirname, './hello.proto'),
   serviceName: 'Greeter',
 })
 
@@ -97,10 +98,11 @@ const request = client.request({
 // server.js
 const grpc = require('@grpc/grpc-js');
 const { loadSync } = require('@grpc/proto-loader');
+const path = require('path');
 
 const proto = grpc.loadPackageDefinition(
-  loadSync('./hello.proto', { defaults: true });
-)
+  loadSync(path.resolve(__dirname, './hello.proto'), { defaults: true })
+);
 
 function sayHello(call, callback) {
   console.warn(call.metadata.get('foo')); // print "bar"
